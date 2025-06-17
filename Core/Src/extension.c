@@ -66,5 +66,16 @@ void Restore_Vector_Table_To_Flash(void) {
     __ISB();
 }
 
+// 测试串口颜色显示
+void test_uart_color(void)
+{
+    printf("Normal Text\r\n");
+    printf(ANSI_COLOR_RED    "Red Text\r\n"    ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_GREEN  "Green Text\r\n"  ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_YELLOW "Yellow Text\r\n" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_BLUE   "Blue Text\r\n"   ANSI_COLOR_RESET);
+    printf("Back to Normal Text\r\n");
+}
+
 
 
