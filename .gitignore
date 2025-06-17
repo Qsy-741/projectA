@@ -1,4 +1,6 @@
-.vscode/
+.vscode/.BROWSE.C_CPP.DB
+.vscode/.BROWSE.C_CPP.DB-shm
+.vscode/.BROWSE.C_CPP.DB-wal
 MDK-ARM/projectA/
 build.log
 MDK-ARM/JLinkLog.txt

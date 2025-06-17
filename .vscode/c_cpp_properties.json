@@ -1,0 +1,32 @@
+{
+    "configurations": [
+        {
+            "name": "STM32",
+            "includePath": [
+                "C:/Keil_v5/ARM/ARMCC/**",
+                "${workspaceFolder}/**",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceRoot}/.vscode/.browse.c_cpp.db",
+                "path": [
+                    "C:/Keil_v5/ARM/ARMCC/**",
+                    "${workspaceFolder}/**",
+                    ""
+                ]
+            },
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "__CC_ARM",
+                "UUSE_HAL_DRIVER",
+                "STM32F446xx"
+            ],
+            "intelliSenseMode": "gcc-arm",
+            "cStandard": "c99"
+        }
+    ],
+    "version": 4
+}

@@ -1,0 +1,16 @@
+{
+    "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
+        "clang-diagnostic-error"
+    ],
+    "files.associations": {
+        "cmsis_os.h": "c",
+        "ring_buffer.h": "c",
+        "usart_dma_double.h": "c",
+        "freertos.h": "c",
+        "main.h": "c",
+        "task.h": "c",
+        "mainfunc.h": "c",
+        "extension.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
