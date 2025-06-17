@@ -1,2 +1,4 @@
 .vscode/
 MDK-ARM/projectA/
+build.log
+MDK-ARM/JLinkLog.txt
