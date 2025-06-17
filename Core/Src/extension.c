@@ -1,5 +1,41 @@
 // 扩展一些常用代码
+#include "extension.h"
 
+void my_memcpy(void *dst, void *src, uint16_t size)
+{
+    // 参数检查
+    if (dst == NULL || src == NULL || size == 0) {
+        return;
+    }
+
+    // 检查源和目标是否重叠
+    if (((uint8_t *)dst <= (uint8_t *)src && (uint8_t *)dst + size > (uint8_t *)src) ||
+        ((uint8_t *)src <= (uint8_t *)dst && (uint8_t *)src + size > (uint8_t *)dst)) {
+        // 如果内存区域重叠，从后向前拷贝
+        uint8_t *d = (uint8_t *)dst + size - 1;
+        uint8_t *s = (uint8_t *)src + size - 1;
+        while (size--) {
+            *d-- = *s--;
+        }
+    } else {
+        // 不重叠的情况，从前向后拷贝
+        uint8_t *d = (uint8_t *)dst;
+        uint8_t *s = (uint8_t *)src;
+        
+        // 首先尝试按 32 位对齐拷贝
+        while (size >= 4 && (((uintptr_t)d & 3) == 0) && (((uintptr_t)s & 3) == 0)) {
+            *(uint32_t *)d = *(uint32_t *)s;
+            d += 4;
+            s += 4;
+            size -= 4;
+        }
+        
+        // 剩余的字节按字节拷贝
+        while (size--) {
+            *d++ = *s++;
+        }
+    }
+}
 
 #define VECTOR_TABLE_SIZE (128) 
 uint32_t vector_table_ram[VECTOR_TABLE_SIZE] __attribute__((aligned(512)));
@@ -12,7 +48,7 @@ void Remap_Vector_Table_To_RAM(void) {
 
     // 2. 从Flash中拷贝向量表到SRAM
     // 原始向量表的地址存储在SCB->VTOR中
-    memcpy(vector_table_ram, (void*)SCB->VTOR, vect_tab_size_bytes);
+    my_memcpy(vector_table_ram, (void*)SCB->VTOR, vect_tab_size_bytes);
 
     // 3. 将SCB->VTOR指向SRAM中的新向量表
     // 确保在写VTOR之前所有内存访问都已完成
@@ -30,44 +66,5 @@ void Restore_Vector_Table_To_Flash(void) {
     __ISB();
 }
 
-#define LOG_ENABLE
-
-// 日志打印
-#ifdef LOG_ENABLE
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_YELLOW  "\x1b[33m"
-#define ANSI_COLOR_BLUE    "\x1b[34m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
-
-#define log_printf(format, ...) \
-    do { \
-         if(g_level>=LOG_LEVEL_Trans)\
-			 printf( ""format"", ##__VA_ARGS__);\
-    } while (0)
-
-#define log_info(format, ...) \
-    do { \
-         if(g_level>=LOG_LEVEL_INFO)\
-             printf(ANSI_COLOR_GREEN"[%s][info](%d): "format ANSI_COLOR_RESET"\r\n", __func__, __LINE__, ##__VA_ARGS__);\
-    } while (0)
-
-#define log_warn(format, ...) \
-    do { \
-         if(g_level>=LOG_LEVEL_WARN)\
-             printf(ANSI_COLOR_YELLOW"[%s][warn](%d): "format ANSI_COLOR_RESET"\r\n", __func__, __LINE__, ##__VA_ARGS__);\
-    } while (0)
-
-#define log_error(format, ...) \
-    do { \
-         if(g_level>=LOG_LEVEL_ERROR)\
-             printf(ANSI_COLOR_RED"[%s][error](%d): "format ANSI_COLOR_RESET"\r\n", __func__, __LINE__, ##__VA_ARGS__);\
-    } while (0)
-#else
-#define log_printf(format, ...)
-#define log_info(format, ...)
-#define log_warn(format, ...)
-#define log_error(format, ...)
-#endif
 
 

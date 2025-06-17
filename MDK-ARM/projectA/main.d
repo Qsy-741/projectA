@@ -46,3 +46,4 @@ projecta\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_
 projecta\main.o: ../Core/Inc/dma.h
 projecta\main.o: ../Core/Inc/usart.h
 projecta\main.o: ../Core/Inc/gpio.h
+projecta\main.o: ../Core/Inc/extension.h

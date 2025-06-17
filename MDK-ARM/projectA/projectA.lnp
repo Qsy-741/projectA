@@ -10,6 +10,7 @@
 "projecta\stm32f4xx_hal_msp.o"
 "projecta\stm32f4xx_hal_timebase_tim.o"
 "projecta\uart_task.o"
+"projecta\extension.o"
 "projecta\stm32f4xx_hal_rcc.o"
 "projecta\stm32f4xx_hal_rcc_ex.o"
 "projecta\stm32f4xx_hal_flash.o"

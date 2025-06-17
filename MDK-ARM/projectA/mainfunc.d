@@ -44,3 +44,4 @@ projecta\mainfunc.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cm
 projecta\mainfunc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
 projecta\mainfunc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 projecta\mainfunc.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+projecta\mainfunc.o: ../Core/Inc/extension.h
