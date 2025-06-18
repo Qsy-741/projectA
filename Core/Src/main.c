@@ -46,7 +46,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-LOG_LEVEL_E g_level = LOG_LEVEL_DEBUG;
+LOG_LEVEL_E g_level = LOG_LEVEL_ERROR;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

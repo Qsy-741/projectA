@@ -399,6 +399,21 @@
               <FilePath>..\Core\Src\mainfunc.c</FilePath>
             </File>
             <File>
+              <FileName>uart_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\uart_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>extension.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\extension.c</FilePath>
+            </File>
+            <File>
+              <FileName>ymodem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\ymodem.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>
@@ -437,16 +452,6 @@
               <FileName>stm32f4xx_hal_timebase_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_timebase_tim.c</FilePath>
-            </File>
-            <File>
-              <FileName>uart_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\uart_task.c</FilePath>
-            </File>
-            <File>
-              <FileName>extension.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\extension.c</FilePath>
             </File>
           </Files>
         </Group>

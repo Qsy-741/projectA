@@ -10,7 +10,12 @@
         "main.h": "c",
         "task.h": "c",
         "mainfunc.h": "c",
-        "extension.h": "c"
+        "extension.h": "c",
+        "stdint.h": "c",
+        "stdbool.h": "c",
+        "string": "c",
+        "array": "c",
+        "freertosconfig.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
