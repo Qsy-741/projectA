@@ -8,11 +8,11 @@ import sys
 runing = True
 
 def readfile(logfile):
-    with open(logfile, 'w') as f:
+    with open(logfile, 'w', encoding='utf-8', errors='ignore') as f:
         pass
-    with open(logfile, 'r') as f:
+    with open(logfile, 'rb') as f:
         while runing:
-            line = f.readline(1000)
+            line = f.readline(1000).decode('utf-8', errors='ignore')
             if line != '':
                 line = line.replace('\\', '/')
                 print(line, end = '')
