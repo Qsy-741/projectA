@@ -8,6 +8,7 @@
 #define     YMODEM_FRAME_OK          1
 #define     YMODEM_FRAME_REPEAT      2
 #define     YMODEM_TRANFSER_END      3
+#define     YMODEM_TRANFSER_END_CONF 4
 
 #define     SOH     0x01
 #define     STX     0x02

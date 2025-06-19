@@ -11,7 +11,7 @@
 
 #define DoubleBuffer         // 控制是否启用双buffer   
 
-#define UART_RX_BUF_SIZE    512
+#define UART_RX_BUF_SIZE    1280
 
 #ifdef DoubleBuffer
 #define UART_RX_BUF_NUM     2
@@ -32,6 +32,7 @@ void Uart_Process(void *argument)
     uart_init();
     uint8_t ACK = 0x06;       
     uint8_t NAK = 0x15;
+    uint8_t C = 0x43;
     uint16_t uart_pkg_len;      // 数据包长度
     uint8_t *p_uart_pkg;        // 数据包指针
     uint8_t *p_fram_data;       // 文件数据指针
@@ -53,37 +54,34 @@ void Uart_Process(void *argument)
             #endif
             // 这里添加数据处理代码 例如：解析数据、响应命令等
             // HAL_UART_Transmit(&huart6, p_uart_pkg, uart_pkg_len, 1000);
-            flag = 1;
             ymodem_result = Ymodem_check(p_uart_pkg, uart_pkg_len);
-            if(ymodem_result == YMODEM_HEAD_OK)
+            switch(ymodem_result)
             {
-                HAL_UART_Transmit(&huart6, &ACK, 1, 100);
-                log_info("Ymodem file name:");
-                for(uint8_t i = 0; i < sizeof(file_name); i++)
-                {
-                    HAL_UART_Transmit(&huart6, &file_name[i], 1, 100);
-                }
-                
-                log_info("Ymodem file size:");
-                for(uint8_t i = 0; i < sizeof(file_size); i++)
-                {
-                    HAL_UART_Transmit(&huart6, &file_size[i], 1, 100);
-                }
+                case YMODEM_HEAD_OK:
+                    flag = 1;
+                    HAL_UART_Transmit(&huart6, &ACK, 1, 100);
+                    HAL_UART_Transmit(&huart6, &C, 1, 100);
+                    break;
+                case YMODEM_FRAME_OK:
+                    p_fram_data = &p_uart_pkg[3];   // 跳过开头3个字节，数据长度为fram_data_len
+                    HAL_UART_Transmit(&huart6, &ACK, 1, 100);
+                    break;
+                case YMODEM_FRAME_REPEAT:
+                    HAL_UART_Transmit(&huart6, &NAK, 1, 100);
+                    break;
+                case YMODEM_TRANFSER_END:
+                    HAL_UART_Transmit(&huart6, &ACK, 1, 100);
+                    HAL_UART_Transmit(&huart6, &C, 1, 100);
+                    break;
+                case YMODEM_TRANFSER_END_CONF:
+                    HAL_UART_Transmit(&huart6, &ACK, 1, 100);
+                    flag = 0;
+                    break;
+                case YMODEM_ERROR:
+                    HAL_UART_Transmit(&huart6, &NAK, 1, 100);
+                    break;
             }
-            else if(ymodem_result == YMODEM_FRAME_OK)
-            {
-                p_fram_data = p_uart_pkg + 3;       // 指向接收帧的数据，长度为fram_data_len
-                HAL_UART_Transmit(&huart6, &ACK, 1, 100);
-            }
-            else if(ymodem_result == YMODEM_TRANFSER_END || ymodem_result == YMODEM_FRAME_REPEAT)
-            {
-                HAL_UART_Transmit(&huart6, &ACK, 1, 100);
-            }
-            else
-            {
-                HAL_UART_Transmit(&huart6, &NAK, 1, 100);
-                // log_info("Ymodem frame check failed");
-            }
+          
         }
         
     }

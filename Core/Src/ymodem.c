@@ -1,17 +1,19 @@
 #include "ymodem.h"
 
 
-uint8_t file_name[128];
-uint8_t file_size[32];
-uint16_t fram_cnt = 0;
-uint16_t fram_data_len = 0;
+uint8_t file_name[128];     // 文件名
+uint8_t file_name_len = 0;  // 文件名长度
+uint8_t file_size[32];     // 文件大小
+uint8_t file_size_len = 0; // 文件大小长度
+uint16_t fram_cnt = 0;     // 帧序号
+uint16_t fram_data_len = 0; // 数据帧长度
 
 int Ymodem_check(uint8_t *buf, uint16_t len)
 {
     uint8_t *p_file_name;
-    uint16_t i = 0;
     uint8_t tmp_flag = 0;
     uint16_t crc_check = 0;
+    static EOT_flag = 0;
 
     if(!(buf[0]==SOH || buf[0]==STX || buf[0]==EOT))       // 包头不正确
     {
@@ -20,6 +22,7 @@ int Ymodem_check(uint8_t *buf, uint16_t len)
     else if(buf[0]==EOT)        // 结束命令
     {
         fram_cnt = 0;   // 重置帧序号
+        EOT_flag = 1;
         return YMODEM_TRANFSER_END;
     }
     else
@@ -42,7 +45,7 @@ int Ymodem_check(uint8_t *buf, uint16_t len)
     {
         return YMODEM_ERROR;
     }
-    else if(buf[1] < fram_cnt)  // 帧序号不匹配
+    else if(buf[1] < fram_cnt)  // 帧序号为重复帧
     {
         return YMODEM_FRAME_REPEAT;
     }
@@ -53,36 +56,40 @@ int Ymodem_check(uint8_t *buf, uint16_t len)
 
     if(buf[1] == 0)     // 开始处理数据，帧0为文件名和长度
     {
-        for(i=0;i<fram_data_len;i++)    // 获取文件名和文件大小,越过前三个字节
+        for(uint16_t i = 0; i < fram_data_len; i++)    // 获取文件名和文件大小,越过前三个字节
         {
-            if(tmp_flag == 0)
-            {
-                file_name[i] = buf[3+i];
-            }
-            else
-            {
-                file_size[i-1] = buf[3+i];
-            }
             if(buf[3+i] == 0x00)
             {
-                if(tmp_flag == 0)
+                file_name[i] = '\0';
+                file_name_len = i;
+                for(uint16_t j = 0; j < fram_data_len; j++)
                 {
-                    file_name[i] = '\0';
-                    tmp_flag = 1;
+                    if(buf[3+i+j] == 0x00 || buf[3+i+j] == 0x20)
+                    {
+                        file_size[j] = '\0';
+                        file_size_len = j;
+                        break;
+                    }
+                    file_size[j] = buf[3+i+j];
                 }
-                else
-                {
-                    file_size[i] = '\0';
-                    tmp_flag = 0;
-                    break;
-                }
+                break;
             }
+            file_name[i] = buf[3+i];
         }
         return YMODEM_HEAD_OK;   // 起始帧处理完毕
     }
     else                        
     {
-        return YMODEM_FRAME_OK;   // 数据帧ok
+        for(uint8_t z = 0; z < 16; z++)  // 验证前16个字节，如果不为NULL则为数据帧
+        {
+            if(EOT_flag == 1)
+            {
+                return YMODEM_FRAME_OK;   // 数据帧ok
+            }
+        }
+        fram_cnt = 0;
+        fram_data_len = 0;
+        return YMODEM_TRANFSER_END_CONF;   // 数据传输确认结束
     }
             
 }
